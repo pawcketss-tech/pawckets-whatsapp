@@ -1,16 +1,3 @@
-## 🐹 **Excellent! Now including HABITUAL & ENVIRONMENTAL symptoms!**
-
-I've added:
-- **Normal behaviors** (why your hamster does certain things)
-- **Environmental needs** (temperature, bedding, etc.)
-- **First aid tips** (what to do if cold, etc.)
-- **Housing advice** (what they need)
-
----
-
-## 🚀 **COMPLETE SCRIPT WITH HABITUAL & ENVIRONMENTAL SYMPTOMS**
-
-```javascript
 const express = require('express');
 const twilio = require('twilio');
 const app = express();
@@ -18,9 +5,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ====== COMPLETE SYMPTOM DATABASE (with habitual & environmental) ======
+// ====== COMPLETE SYMPTOM DATABASE ======
 const SYMPTOMS = {
-  // ====== DIGESTIVE ======
   diarrhea: {
     keywords: ['肚柯', '柯水', '腹瀉', '肚瀉', '爛便', '水便', '痾水', '肚痾', '屙', '柯爛', '爛屎', '濕便', '軟便', '綠色便', '黃色便'],
     aliases: ['肚痾', '屙爛'],
@@ -42,8 +28,6 @@ const SYMPTOMS = {
     info: '倉鼠正常的糞便量會因飲食量而改變，突然增多可能與食物攝取增加或消化不良有關。如糞便形狀正常則無需擔心。',
     habitual: true
   },
-  
-  // ====== RESPIRATORY ======
   sneeze: {
     keywords: ['打噴嚏', '噴嚏', '打乞嗤', '乞嗤', '噴嚏', '打噴', '鼻敏感'],
     aliases: ['噴'],
@@ -59,8 +43,6 @@ const SYMPTOMS = {
     aliases: ['喘', '唞'],
     info: '呼吸困難屬急症！可能由肺炎、過敏或心臟問題引起。'
   },
-  
-  // ====== SKIN & COAT ======
   scratching: {
     keywords: ['抓癢', '痕癢', '不停抓', 'R痕', '搔癢', '抓', '癢', '痕', '咬毛', '咬自己'],
     aliases: ['痕', '癢'],
@@ -86,8 +68,6 @@ const SYMPTOMS = {
     aliases: ['膿包', '腫塊'],
     info: '膿瘡需由獸醫切開引流，勿自行擠壓。'
   },
-  
-  // ====== EYES ======
   eyeRedness: {
     keywords: ['眼紅', '眼睛紅', '紅眼', '眼充血', '血絲', '眼部紅腫'],
     aliases: ['紅眼'],
@@ -108,8 +88,6 @@ const SYMPTOMS = {
     aliases: ['朦'],
     info: '白內障常見於老年倉鼠，但幼鼠出現需檢查糖尿病或營養問題。'
   },
-  
-  // ====== MOUTH & TEETH ======
   drooling: {
     keywords: ['流口水', '口水', '濕下巴', '下巴濕', '甩牙', '牙齒過長', '牙太長', '食唔到嘢', '口水多'],
     aliases: ['口水'],
@@ -125,8 +103,6 @@ const SYMPTOMS = {
     aliases: ['面腫', '頰囊'],
     info: '頰囊食物積累或發炎常見，需獸醫清理。'
   },
-  
-  // ====== URINARY ======
   urinaryProblems: {
     keywords: ['尿頻', '柯尿多', '尿少', '尿血', '血尿', '柯尿困難', '泌尿', '飲好多水', '口渴'],
     aliases: ['尿血', '柯尿'],
@@ -138,8 +114,6 @@ const SYMPTOMS = {
     info: '異常口渴可能係糖尿病、腎病或感染，需觀察尿量。',
     habitual: true
   },
-  
-  // ====== NEUROLOGICAL & BEHAVIORAL ======
   lethargy: {
     keywords: ['冇精神', '呆滯', '唔郁', '冇力', '倦怠', '唔活躍', '成日瞓', '冇活力', '垂頭喪氣', '軟弱', '疲勞', '無力'],
     aliases: ['冇力', '呆'],
@@ -170,8 +144,6 @@ const SYMPTOMS = {
     aliases: ['癱', '行唔到'],
     info: '癱瘓可能因脊椎受傷、營養缺乏或中風引起，屬急症。'
   },
-  
-  // ====== HABITUAL / NORMAL BEHAVIORS ======
   normalSleeping: {
     keywords: ['成日瞓', '成日訓', '瞓好多', '訓好多', '懶瞓', '睡眠多'],
     aliases: ['瞓多'],
@@ -196,8 +168,6 @@ const SYMPTOMS = {
     info: '倉鼠會花大量時間清潔自己，這是正常行為。如過度清潔導致脫毛則可能有壓力或皮膚問題。',
     habitual: true
   },
-  
-  // ====== ENVIRONMENTAL NEEDS ======
   feelingCold: {
     keywords: ['凍', '寒冷', '好凍', '手腳凍', '耳仔凍', '凍親', '打冷震', '縮埋', '發冷'],
     aliases: ['凍', '寒冷'],
@@ -279,7 +249,7 @@ const VETS = [
   }
 ];
 
-// ====== ENHANCED PARSING ======
+// ====== PARSING FUNCTION ======
 function parseSymptoms(text) {
   const found = [];
   const lowerText = text.toLowerCase();
@@ -293,7 +263,6 @@ function parseSymptoms(text) {
     }
   }
   
-  // Partial matching for aliases
   if (found.length === 0) {
     for (const [symptom, data] of Object.entries(SYMPTOMS)) {
       for (const alias of data.aliases || []) {
@@ -305,7 +274,6 @@ function parseSymptoms(text) {
     }
   }
   
-  // Contextual phrases
   const contextPhrases = {
     '唔舒服': ['lethargy', 'noAppetite', 'stress'],
     '有病': ['lethargy', 'noAppetite'],
@@ -325,15 +293,13 @@ function parseSymptoms(text) {
   return [...new Set(found)];
 }
 
-// ====== ENHANCED ASSESSMENT (with environmental advice) ======
+// ====== ASSESSMENT FUNCTION ======
 function assessSymptoms(symptoms) {
   const s = new Set(symptoms);
   
-  // Check if any environmental symptoms detected
   const envSymptoms = ['feelingCold', 'feelingHot', 'needsBedding', 'cageTooSmall', 'needExercise'];
   const hasEnv = envSymptoms.some(sym => s.has(sym));
   
-  // If ONLY environmental symptoms, return advice without vet
   if (hasEnv && s.size === 1) {
     const symptom = [...s][0];
     const data = SYMPTOMS[symptom];
@@ -345,7 +311,6 @@ function assessSymptoms(symptoms) {
     };
   }
   
-  // ====== MEDICAL EMERGENCIES ======
   if (s.has('diarrhea') && s.has('wetTail')) {
     return {
       level: '🚨',
@@ -382,7 +347,6 @@ function assessSymptoms(symptoms) {
     };
   }
   
-  // ====== URGENT (24 hours) ======
   if (s.has('eyeCloudy') || s.has('eyeSwelling')) {
     return {
       level: '🔴',
@@ -410,7 +374,6 @@ function assessSymptoms(symptoms) {
     };
   }
   
-  // ====== HIGH RISK ======
   if (s.has('sneeze') && s.has('runnyNose')) {
     return {
       level: '🟠',
@@ -447,7 +410,6 @@ function assessSymptoms(symptoms) {
     };
   }
   
-  // ====== MODERATE ======
   if (s.has('scratching') && (s.has('hairLoss') || s.has('mites'))) {
     return {
       level: '🟡',
@@ -484,7 +446,6 @@ function assessSymptoms(symptoms) {
     };
   }
   
-  // ====== HABITUAL / NORMAL BEHAVIORS ======
   if (s.has('normalSleeping')) {
     return {
       level: '💤',
@@ -530,7 +491,6 @@ function assessSymptoms(symptoms) {
     };
   }
   
-  // ====== ENVIRONMENTAL (if mixed with other symptoms) ======
   if (s.has('feelingCold')) {
     return {
       level: '🧊',
@@ -571,4 +531,19 @@ function assessSymptoms(symptoms) {
     return {
       level: '🏃',
       levelText: '運動建議',
-      advice: '🏃 運動對倉鼠非常重要！\n\n✅ 跑輪要求：\n• 侏儒倉鼠：直徑 ≥ 16cm\n• 敘利亞倉鼠：直徑 ≥ 21cm\n• ❌ 不可用鐵絲網（傷腳！）\n\n💡 其他活動：\n• 放
+      advice: '🏃 運動對倉鼠非常重要！\n\n✅ 跑輪要求：\n• 侏儒倉鼠：直徑 ≥ 16cm\n• 敘利亞倉鼠：直徑 ≥ 21cm\n• ❌ 不可用鐵絲網（傷腳！）\n\n💡 其他活動：\n• 放風區（至少 1m²）\n• 隧道和玩具\n• 每天至少 30 分鐘活動時間\n\n💡 靜音跑輪推薦：Wodent Wheel, Silent Runner',
+      urgency: 'environmental'
+    };
+  }
+  
+  return {
+    level: '🟢',
+    levelText: '低風險 — 繼續觀察',
+    advice: '✅ 鼠鼠目前冇明顯異常。\n\n📋 保持健康建議：\n• 每天檢查行為變化\n• 保持籠內清潔\n• 提供均衡飲食\n• 定期更換墊材\n• 每週記錄體重\n\n如有任何變化，可再次查詢！',
+    urgency: 'low'
+  };
+}
+
+// ====== REPLY GENERATOR ======
+function generateReply(assessment, symptoms) {
+  let reply = `
