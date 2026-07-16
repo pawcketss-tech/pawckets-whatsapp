@@ -546,4 +546,67 @@ function assessSymptoms(symptoms) {
 
 // ====== REPLY GENERATOR ======
 function generateReply(assessment, symptoms) {
-  let reply = `
+   let reply = `🐹 **Pawckets 症狀分析**\n\n`;
+  reply += `${assessment.level} ${assessment.levelText}\n\n`;
+  
+  if (symptoms.length > 0) {
+    reply += `📋 偵測到症狀：${symptoms.join('、')}\n\n`;
+  } else {
+    reply += `📋 暫未偵測到明顯症狀\n\n`;
+  }
+  
+  reply += `${assessment.advice}\n\n`;
+  
+  // Show vets for emergency, urgent, or high risk
+  if (['emergency', 'urgent', 'high'].includes(assessment.urgency)) {
+    reply += `📍 **推薦獸醫**\n`;
+    const vetsToShow = assessment.urgency === 'emergency' 
+      ? VETS.filter(v => v.emergency).slice(0, 3)
+      : VETS.slice(0, 3);
+    
+    vetsToShow.forEach((v, i) => {
+      reply += `${i+1}. ${v.name}\n`;
+      reply += `   📍 ${v.district} | ⭐${v.rating}\n`;
+      reply += `   📞 ${v.phone}\n`;
+      if (v.note) reply += `   📌 ${v.note}\n`;
+      reply += `\n`;
+    });
+  }
+  
+  reply += `---\n`;
+  reply += `⚠️ AI 建議僅供參考，最終診斷以獸醫為準。\n`;
+  reply += `🔄 如需重新評估，請重新描述症狀。`;
+  
+  return reply;
+}
+
+// ====== WEBHOOK ======
+app.post('/webhook', (req, res) => {
+  const incomingMsg = req.body.Body || '';
+  const sender = req.body.From;
+  const mediaUrl = req.body.MediaUrl0;
+  
+  console.log(`📩 來自 ${sender}: ${incomingMsg}`);
+  
+  if (mediaUrl) {
+    const reply = `🐹 收到你嘅圖片！\n\n目前 Pawckets 只支援文字分析。請用文字詳細描述鼠鼠嘅症狀。\n\n例如：打噴嚏、流鼻水、肚柯、冇精神等。`;
+    const twiml = new twilio.twiml.MessagingResponse();
+    twiml.message(reply);
+    return res.type('text/xml').send(twiml.toString());
+  }
+  
+  const symptoms = parseSymptoms(incomingMsg);
+  const assessment = assessSymptoms(symptoms);
+  const reply = generateReply(assessment, symptoms);
+  
+  const twiml = new twilio.twiml.MessagingResponse();
+  twiml.message(reply);
+  res.type('text/xml').send(twiml.toString());
+});
+
+// ====== HEALTH CHECK ======
+app.get('/health', (req, res) => res.json({ status: 'OK' }));
+
+// ====== START SERVER ======
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🐹 Pawckets 運行中：${PORT}`));
