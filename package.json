@@ -1,0 +1,13 @@
+{
+  "name": "pawckets-whatsapp",
+  "version": "1.0.0",
+  "description": "WhatsApp bot for pet health advice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "twilio": "^4.19.0"
+  }
+}
