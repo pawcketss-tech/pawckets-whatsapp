@@ -28,7 +28,6 @@ const CONVERSATION_DISCLAIMER = `
 // ============================================================
 // COMPLETE SYMPTOM DATABASE
 // ============================================================
-
 const SYMPTOMS = {
   lossOfAppetite: {
     keywords: ['唔食', '唔肯食', '食慾下降', '食量減少', '冇胃口', '唔願食', '食少', '厭食', '唔食嘢', '食慾不振', '瘦', '體重下降'],
@@ -146,8 +145,8 @@ const SYMPTOMS = {
     info: '腹瀉可由飲食改變、細菌感染或寄生蟲引起。'
   },
   wetTail: {
-    keywords: ['濕尾', '屁股濕', '肛門濕', '尾巴濕', 'pat濕', '尾部濕', '肛門紅腫', '屁股紅', '尾濕'],
-    aliases: ['尾濕'],
+    keywords: ['濕尾', '屁股濕', '肛門濕', '尾巴濕', 'pat濕', '尾部濕', '肛門紅腫', '屁股紅', '尾濕', 'wet tail', 'wet Tail', 'wet-tail', 'wetTail', 'wet', 'tail'],
+    aliases: ['尾濕', 'wet'],
     info: '濕尾症是嚴重腸道感染，屬急症！可在48小時內致命。'
   },
   constipation: {
@@ -462,26 +461,32 @@ function parseSymptoms(text) {
   
   return [...new Set(found)];
 }
-```
 
----
-
-## 📜 **PART 2 — Copy this right after Part 1:**
-
-```javascript
 // ============================================================
-// ASSESSMENT FUNCTION
+// ASSESSMENT FUNCTION (FIXED)
 // ============================================================
 function assessSymptoms(symptoms) {
   const s = new Set(symptoms);
   
   // ====== LIFE-THREATENING EMERGENCIES ======
-  if (s.has('diarrhea') && s.has('wetTail')) {
+  
+  // WET TAIL — EMERGENCY (even without diarrhea mentioned)
+  if (s.has('wetTail')) {
     return {
       level: '🚨',
       levelText: '⚠️ 緊急情況 — 立即就醫！',
       advice: '🔴 **濕尾症可在 48 小時內致命！**\n\n🏥 請立即帶鼠鼠前往 24 小時珍禽異獸醫院！\n\n🆘 等待期間：\n• 保暖 (28-30°C)\n• 提供電解質水\n• 不要強迫餵食\n• 保持籠內清潔',
       urgency: 'emergency'
+    };
+  }
+  
+  // DIARRHEA WITHOUT WET TAIL — URGENT
+  if (s.has('diarrhea') && !s.has('wetTail')) {
+    return {
+      level: '🔴',
+      levelText: '腹瀉 — 24 小時內就醫',
+      advice: '💧 腹瀉可導致脫水，對倉鼠很危險！\n\n🏠 護理：\n• 補充足夠水分\n• 停餵新鮮蔬果\n• 保持籠內清潔\n• 觀察有無惡化',
+      urgency: 'urgent'
     };
   }
   
@@ -518,15 +523,6 @@ function assessSymptoms(symptoms) {
       level: '🔴',
       levelText: '眼部問題 — 24 小時內就醫',
       advice: '👁️ 眼部問題需盡快處理，避免惡化或失明。\n\n📋 護理建議：\n• 用生理鹽水清潔眼部\n• 避免摩擦\n• 觀察有無惡化',
-      urgency: 'urgent'
-    };
-  }
-  
-  if (s.has('diarrhea') && !s.has('wetTail')) {
-    return {
-      level: '🔴',
-      levelText: '腹瀉 — 24 小時內就醫',
-      advice: '💧 腹瀉可導致脫水，對倉鼠很危險！\n\n🏠 護理：\n• 補充足夠水分\n• 停餵新鮮蔬果\n• 保持籠內清潔\n• 觀察有無惡化',
       urgency: 'urgent'
     };
   }
@@ -616,13 +612,14 @@ function assessSymptoms(symptoms) {
   
   if (s.has('irritability') || s.has('repetitiveBehavior')) {
     return {
-          level: '🟡',
+      level: '🟡',
       levelText: '行為異常 — 注意觀察',
       advice: '🧠 行為改變可能因壓力或疼痛引起。\n\n📋 建議：\n• 檢查環境有無壓力源\n• 提供躲藏空間\n• 減少打擾\n\n如持續請諮詢獸醫。',
       urgency: 'medium'
     };
   }
   
+  // ====== ENVIRONMENTAL ======
   if (s.has('shivering') || s.has('feelingCold')) {
     return {
       level: '🧊',
