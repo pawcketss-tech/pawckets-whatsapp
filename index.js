@@ -1,3 +1,12 @@
+You're right — that's my fault! I keep hitting the **character limit** and the script gets cut off. Let me give you the **complete script in parts** that you can paste together.
+
+---
+
+## 📜 **COMPLETE SCRIPT (Part 1 of 2)**
+
+**Copy this first:**
+
+```javascript
 const express = require('express');
 const twilio = require('twilio');
 const app = express();
@@ -30,7 +39,6 @@ const CONVERSATION_DISCLAIMER = `
 // ============================================================
 
 const SYMPTOMS = {
-  // ====== GENERAL/BEHAVIORAL ======
   lossOfAppetite: {
     keywords: ['唔食', '唔肯食', '食慾下降', '食量減少', '冇胃口', '唔願食', '食少', '厭食', '唔食嘢', '食慾不振', '瘦', '體重下降'],
     aliases: ['厭食', '冇胃口'],
@@ -71,8 +79,6 @@ const SYMPTOMS = {
     aliases: ['發冷'],
     info: '持續發冷可能因體溫過低或嚴重感染。'
   },
-  
-  // ====== COAT AND SKIN ======
   ruffledCoat: {
     keywords: ['毛凌亂', '毛亂', '冇梳毛', '毛打結', '打結', '毛豎起', '毛粗糙', '骯髒', '冇理毛'],
     aliases: ['毛亂'],
@@ -108,8 +114,6 @@ const SYMPTOMS = {
     aliases: ['皮屑', '甩皮'],
     info: '大量皮屑可能因寄生蟲（蟎蟲）或真菌感染（金錢癬）。'
   },
-  
-  // ====== RESPIRATORY ======
   sneeze: {
     keywords: ['打噴嚏', '噴嚏', '打乞嗤', '乞嗤', '噴嚏', '打噴', '鼻敏感'],
     aliases: ['噴'],
@@ -145,8 +149,6 @@ const SYMPTOMS = {
     aliases: ['變藍'],
     info: '皮膚或黏膜變藍是缺氧的危險信號，屬急症！'
   },
-  
-  // ====== DIGESTIVE/GASTROINTESTINAL ======
   diarrhea: {
     keywords: ['肚柯', '柯水', '腹瀉', '肚瀉', '爛便', '水便', '痾水', '肚痾', '屙', '柯爛', '爛屎', '濕便', '軟便', '綠色便', '黃色便', '柯水水'],
     aliases: ['肚痾', '屙爛'],
@@ -177,8 +179,6 @@ const SYMPTOMS = {
     aliases: ['便便變'],
     info: '糞便的顏色、氣味或形狀改變可能因感染或飲食問題。'
   },
-  
-  // ====== EYE, EAR, AND MOUTH ======
   eyeDull: {
     keywords: ['眼無神', '眼凹', '眼窩凹陷', '眼乾', '眼冇光', '眼珠暗淡'],
     aliases: ['無神'],
@@ -224,8 +224,6 @@ const SYMPTOMS = {
     aliases: ['甩牙'],
     info: '牙齒斷裂可能因外傷，需檢查有無影響進食。'
   },
-  
-  // ====== URINARY ======
   urinaryProblems: {
     keywords: ['尿頻', '柯尿多', '尿少', '尿血', '血尿', '柯尿困難', '泌尿', '飲好多水', '口渴', '尿痛', '柯尿好耐'],
     aliases: ['尿血', '柯尿'],
@@ -241,8 +239,6 @@ const SYMPTOMS = {
     aliases: ['變色尿'],
     info: '尿液顏色異常可能因膀胱感染、結石或出血。'
   },
-  
-  // ====== NEUROLOGICAL ======
   headTilt: {
     keywords: ['頭歪', '歪頭', '側頭', '平衡問題', '暈眩', '耳水不平衡', '打轉', '轉圈', '失平衡', '跌倒', '傾斜'],
     aliases: ['歪頭', '側頭'],
@@ -268,8 +264,6 @@ const SYMPTOMS = {
     aliases: ['抽搐', '發羊吊'],
     info: '抽搐屬急症！可能因癲癇、中毒或代謝問題。'
   },
-  
-  // ====== MUSCULOSKELETAL ======
   lameness: {
     keywords: ['跛行', '跛腳', '行路拐', '腳痛', '縮腳', '唔肯行', '行路慢', '跳跳下'],
     aliases: ['跛', '拐'],
@@ -285,8 +279,6 @@ const SYMPTOMS = {
     aliases: ['關節腫'],
     info: '關節腫脹可能因關節炎或感染。'
   },
-  
-  // ====== REPRODUCTIVE ======
   pregnant: {
     keywords: ['懷孕', '有咗', '大肚', '生bb', '分娩', '哺乳', '脹奶', '乳腺腫大', '有bb'],
     aliases: ['有咗'],
@@ -302,8 +294,6 @@ const SYMPTOMS = {
     aliases: ['難產'],
     info: '難產屬急症，需立即就醫！'
   },
-  
-  // ====== ENVIRONMENTAL ======
   feelingCold: {
     keywords: ['凍', '寒冷', '好凍', '手腳凍', '耳仔凍', '凍親', '打冷震', '縮埋', '發冷', '體溫低'],
     aliases: ['凍', '寒冷'],
@@ -329,8 +319,6 @@ const SYMPTOMS = {
     aliases: ['運動', '跑輪'],
     info: '每天需至少30分鐘運動。跑輪直徑：侏儒≥16cm，敘利亞≥21cm。'
   },
-  
-  // ====== HABITUAL/NORMAL BEHAVIORS ======
   normalSleeping: {
     keywords: ['成日瞓', '成日訓', '瞓好多', '訓好多', '懶瞓', '睡眠多', '日間瞓'],
     aliases: ['瞓多'],
@@ -465,7 +453,6 @@ function parseSymptoms(text) {
     }
   }
   
-  // Contextual phrases for emergency detection
   const contextPhrases = {
     '急症': ['breathing', 'wetTail', 'shaking', 'paralysis', 'bleeding', 'headTilt', 'seziures'],
     '立即睇醫生': ['breathing', 'wetTail', 'shaking', 'paralysis', 'bleeding', 'headTilt', 'seziures'],
@@ -484,7 +471,13 @@ function parseSymptoms(text) {
   
   return [...new Set(found)];
 }
+```
 
+---
+
+## 📜 **PART 2 — Copy this right after Part 1:**
+
+```javascript
 // ============================================================
 // ASSESSMENT FUNCTION
 // ============================================================
@@ -616,11 +609,6 @@ function assessSymptoms(symptoms) {
     return {
       level: '🟡',
       levelText: '消化問題 — 居家觀察 24 小時',
-      advice: '💩 輕微消化不良可先觀察。\n\n📋 護理建議：\n• 增加飲水\n• 停餵乾糧，改餵濕糧\n• 提供少量南瓜泥\n\n如 24 
-        if (s.has('constipation') || s.has('bloating')) {
-    return {
-      level: '🟡',
-      levelText: '消化問題 — 居家觀察 24 小時',
       advice: '💩 輕微消化不良可先觀察。\n\n📋 護理建議：\n• 增加飲水\n• 停餵乾糧，改餵濕糧\n• 提供少量南瓜泥\n\n如 24 小時無改善請就醫。',
       urgency: 'medium'
     };
@@ -637,7 +625,7 @@ function assessSymptoms(symptoms) {
   
   if (s.has('irritability') || s.has('repetitiveBehavior')) {
     return {
-      level: '🟡',
+          level: '🟡',
       levelText: '行為異常 — 注意觀察',
       advice: '🧠 行為改變可能因壓力或疼痛引起。\n\n📋 建議：\n• 檢查環境有無壓力源\n• 提供躲藏空間\n• 減少打擾\n\n如持續請諮詢獸醫。',
       urgency: 'medium'
@@ -713,7 +701,6 @@ function generateReply(assessment, symptoms) {
   
   reply += `${assessment.advice}\n\n`;
   
-  // Show vets for emergency, urgent, or high risk
   if (['emergency', 'urgent', 'high'].includes(assessment.urgency)) {
     reply += `📍 **推薦獸醫**\n`;
     const vetsToShow = assessment.urgency === 'emergency' 
@@ -746,7 +733,6 @@ app.post('/webhook', (req, res) => {
   
   console.log(`📩 來自 ${sender}: ${incomingMsg}`);
   
-  // Initialize user session
   if (!userSessions.has(sender)) {
     userSessions.set(sender, {
       symptomSet: new Set(),
@@ -768,7 +754,6 @@ app.post('/webhook', (req, res) => {
   const assessment = assessSymptoms(symptoms);
   const reply = generateReply(assessment, symptoms);
   
-  // Log referral if vet is recommended
   if (['emergency', 'urgent', 'high'].includes(assessment.urgency)) {
     const vetsToShow = assessment.urgency === 'emergency' 
       ? VETS.filter(v => v.emergency).slice(0, 1)
