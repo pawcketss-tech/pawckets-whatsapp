@@ -1,12 +1,3 @@
-You're right — that's my fault! I keep hitting the **character limit** and the script gets cut off. Let me give you the **complete script in parts** that you can paste together.
-
----
-
-## 📜 **COMPLETE SCRIPT (Part 1 of 2)**
-
-**Copy this first:**
-
-```javascript
 const express = require('express');
 const twilio = require('twilio');
 const app = express();
